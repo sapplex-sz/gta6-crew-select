@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Crew Select</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: #1a0d28;
+    }
+    .page {
+      position: relative;
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg,
+          #2a1458 0%,
+          #6a1d6e 18%,
+          #e4377a 40%,
+          #ff7a3c 52%,
+          #ffc857 60%,
+          #1aa3a0 68%,
+          #0c3d48 78%,
+          #102028 100%);
+    }
+    .scenery {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1080px;
+    }
+    .page-inner {
+      position: relative;
+      z-index: 2;
+      height: 1080px;
+      padding: 36px 48px 32px;
+      display: grid;
+      grid-template-rows: 228px minmax(0, 1fr) 112px;
+      gap: 14px;
+    }
+    .plaque {
+      align-self: center;
+      justify-self: center;
+      width: 860px;
+      background: #120e18;
+      border: 4px solid #ffc857;
+      border-radius: 18px;
+      padding: 14px 28px 16px;
+      text-align: center;
+      box-shadow: 0 16px 0 rgba(12, 8, 16, 0.35);
+    }
+    .kicker {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.14em;
+      color: #ffc857;
+    }
+    .stars { display: block; }
+    h1 {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 900;
+      font-size: 84px;
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      margin-top: 6px;
+    }
+    .deck {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 800;
+      font-size: 36px;
+      letter-spacing: 0.03em;
+      color: #ffc857;
+      margin-top: 6px;
+    }
+    .slots {
+      display: grid;
+      grid-template-columns: 1fr 1.18fr;
+      gap: 16px;
+      min-height: 0;
+    }
+    .card {
+      min-height: 0;
+      background: #14111a;
+      border-radius: 18px;
+      border: 3px solid #2a2433;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .card-you { border-color: #ff7a3c; }
+    .card-crew { border-color: #c41c83; }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px 8px;
+      flex: 0 0 auto;
+    }
+    .slot {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.12em;
+      color: #c8c0d0;
+    }
+    .pill {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+    .pill-you { background: #ff7a3c; color: #1a0e12; }
+    .pill-crew { background: #c41c83; }
+    .scene {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 0 12px;
+    }
+    .scene svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .identity {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 28px;
+      gap: 14px;
+    }
+    .wordmark {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .mark {
+      width: 132px;
+      height: 132px;
+      display: block;
+    }
+    .pile-wrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 12px;
+    }
+    .pile {
+      max-height: 100%;
+      max-width: 78%;
+      width: auto;
+      height: auto;
+      display: block;
+    }
+    .bar {
+      flex: 0 0 auto;
+      margin: 10px 12px 12px;
+      border-radius: 12px;
+      text-align: center;
+      padding: 8px 10px 10px;
+    }
+    .bar strong {
+      display: block;
+      font-family: "Montserrat", sans-serif;
+      font-weight: 900;
+      font-size: 42px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+    }
+    .bar span {
+      display: block;
+      margin-top: 3px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      color: #fff6ea;
+    }
+    .bar-you { background: #ff7a3c; }
+    .bar-you strong, .bar-you span { color: #1a0e12; }
+    .bar-crew { background: #c41c83; }
+    .footer {
+      align-self: stretch;
+      background: #100e14;
+      border-radius: 16px;
+      border: 3px solid #ffc857;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+    .footer p {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 900;
+      font-size: 36px;
+      letter-spacing: 0.02em;
+      line-height: 1.12;
+      color: #ffffff;
+    }
+    .footer p:last-child { color: #ffc857; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <svg class="scenery" viewBox="0 0 1080 1080" aria-hidden="true">
+      <g fill="none" stroke="#0c3d48" stroke-width="3" opacity="0.55">
+        <path d="M0 760 H1080"/>
+        <path d="M0 820 H1080"/>
+        <path d="M0 890 H1080"/>
+        <path d="M0 970 H1080"/>
+        <path d="M180 700 L40 1080"/>
+        <path d="M400 700 L280 1080"/>
+        <path d="M620 700 L700 1080"/>
+        <path d="M860 700 L1040 1080"/>
+      </g>
+    </svg>
+
+    <div class="page-inner">
+      <header class="plaque">
+        <div class="kicker">
+          <span>LEONIDA · LAUNCH WEEK</span>
+          <svg class="stars" viewBox="0 0 148 28" width="148" height="28" aria-hidden="true">
+            <g fill="#ffc857">
+              <path d="M14 2.2 16.7 9.4h7.6l-6.1 4.5 2.3 7.3L14 16.8 7.5 21.2l2.3-7.3L3.7 9.4h7.6Z"/>
+              <path d="M44 2.2 46.7 9.4h7.6l-6.1 4.5 2.3 7.3L44 16.8 37.5 21.2l2.3-7.3-6.1-4.5h7.6Z"/>
+              <path d="M74 2.2 76.7 9.4h7.6l-6.1 4.5 2.3 7.3L74 16.8 67.5 21.2l2.3-7.3-6.1-4.5h7.6Z"/>
+              <path d="M104 2.2 106.7 9.4h7.6l-6.1 4.5 2.3 7.3L104 16.8 97.5 21.2l2.3-7.3-6.1-4.5h7.6Z"/>
+              <path d="M134 2.2 136.7 9.4h7.6l-6.1 4.5 2.3 7.3L134 16.8 127.5 21.2l2.3-7.3-6.1-4.5h7.6Z"/>
+            </g>
+          </svg>
+        </div>
+        <h1>CREW SELECT</h1>
+        <p class="deck">13 YEARS LATE TO GTA 6</p>
+      </header>
+
+      <div class="slots">
+        <article class="card card-you">
+          <div class="card-top">
+            <span class="slot">SLOT 01 · OPC</span>
+            <span class="pill pill-you">YOU</span>
+          </div>
+          <div class="scene">
+            <svg viewBox="0 0 440 400" role="img" aria-label="A person on a couch finally playing GTA 6">
+              <rect x="8" y="4" width="424" height="198" rx="16" fill="#2a1248"/>
+              <rect x="20" y="16" width="400" height="174" fill="#ff4d8d"/>
+              <rect x="20" y="86" width="400" height="104" fill="#ff7a3c"/>
+              <rect x="20" y="138" width="400" height="52" fill="#ffc857"/>
+              <circle cx="330" cy="72" r="28" fill="#ffe08a"/>
+              <g fill="#1a1028">
+                <path d="M78 186 C86 148 74 116 90 84 C78 116 70 150 64 186 Z"/>
+                <path d="M86 90 C66 50 26 46 8 30 C40 52 66 64 86 90 Z"/>
+                <path d="M86 90 C104 46 150 34 174 52 C138 64 108 76 86 90 Z"/>
+                <path d="M86 90 C114 98 150 124 164 148 C132 128 106 108 86 90 Z"/>
+                <path d="M86 90 C56 106 24 134 12 158 C40 136 66 110 86 90 Z"/>
+                <path d="M86 90 C82 54 100 26 120 14 C100 38 92 64 86 90 Z"/>
+                <path d="M86 90 C72 56 44 36 30 24 C52 46 70 68 86 90 Z"/>
+                <rect x="200" y="132" width="16" height="44"/>
+                <rect x="222" y="116" width="12" height="60"/>
+                <rect x="240" y="140" width="22" height="36"/>
+                <rect x="356" y="124" width="14" height="52"/>
+                <rect x="376" y="112" width="20" height="64"/>
+              </g>
+              <rect x="8" y="190" width="424" height="12" fill="#2a2433"/>
+              <rect x="16" y="168" width="150" height="108" rx="10" fill="#0e0c12" stroke="#ffc857" stroke-width="6"/>
+              <rect x="28" y="180" width="126" height="84" rx="4" fill="#1c1028"/>
+              <text x="91" y="222" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="800" font-size="28" fill="#ffffff">GTA 6</text>
+              <rect x="42" y="236" width="96" height="12" rx="6" fill="#3a2844"/>
+              <rect x="42" y="236" width="96" height="12" rx="6" fill="#ffc857"/>
+              <rect x="12" y="332" width="416" height="54" rx="20" fill="#3d3150"/>
+              <rect x="12" y="314" width="416" height="28" rx="14" fill="#514068"/>
+              <path d="M268 312 C210 308 188 292 168 286" fill="none" stroke="#161018" stroke-width="28" stroke-linecap="round"/>
+              <path d="M268 312 C210 308 188 292 168 286" fill="none" stroke="#f2b59a" stroke-width="16" stroke-linecap="round"/>
+              <rect x="246" y="292" width="156" height="52" rx="22" fill="#14b8b0" stroke="#161018" stroke-width="6"/>
+              <path d="M292 300 C292 276 300 262 314 262 C328 262 336 276 336 300 Z" fill="#f2b59a"/>
+              <circle cx="314" cy="214" r="38" fill="#f2b59a" stroke="#161018" stroke-width="6"/>
+              <path d="M282 206 Q314 168 348 206 Q330 184 314 184 Q298 184 282 206 Z" fill="#1a1220"/>
+              <circle cx="300" cy="216" r="4.5" fill="#1a1220"/>
+              <circle cx="330" cy="216" r="4.5" fill="#1a1220"/>
+              <path d="M300 234 Q314 244 328 234" fill="none" stroke="#1a1220" stroke-width="3.5" stroke-linecap="round"/>
+              <rect x="132" y="268" width="96" height="42" rx="16" fill="#0e0c12" stroke="#ffc857" stroke-width="5"/>
+              <rect x="148" y="284" width="18" height="6" fill="#ffc857"/>
+              <rect x="154" y="278" width="6" height="18" fill="#ffc857"/>
+              <circle cx="196" cy="282" r="5.5" fill="#ff7a3c"/>
+              <circle cx="210" cy="296" r="5.5" fill="#c41c83"/>
+            </svg>
+          </div>
+          <div class="bar bar-you">
+            <strong>FINALLY IN</strong>
+            <span>SINCE GTA V</span>
+          </div>
+        </article>
+
+        <article class="card card-crew">
+          <div class="card-top">
+            <span class="slot">SLOT 02 · CREW</span>
+            <span class="pill pill-crew">FIXER</span>
+          </div>
+          <div class="identity">
+            <img class="wordmark" src="../assets/wordmark-on-dark.svg" alt="make.fun" width="390" height="71">
+            <img class="mark" src="../assets/mark-on-dark.svg" alt="make.fun" width="132" height="132">
+          </div>
+          <div class="pile-wrap">
+            <img class="pile" src="../assets/ghost-pile-trophy.png" alt="Ghost crew on laptops lifting a trophy">
+          </div>
+          <div class="bar bar-crew">
+            <strong>ALREADY PAID</strong>
+            <span>REAL MONEY</span>
+          </div>
+        </article>
+      </div>
+
+      <footer class="footer">
+        <p>YOU PRESSED START.</p>
+        <p>THE CREW GOT REAL MONEY.</p>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
